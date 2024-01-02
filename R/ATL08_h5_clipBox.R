@@ -1,3 +1,23 @@
+#' @include class.icesat2.R
+#' @importClassesFrom terra SpatExtent
+setMethod(
+  "clip",
+  signature = c("icesat2.atl08_h5", "character", "SpatExtent"),
+  function(x, output, bbox) {
+    ATL08_h5_clipBox(x, output, bbox)
+  }
+)
+
+setMethod(
+  "clip",
+  signature = c("icesat2.atl08_h5", "character", "numeric"),
+  function(x, output, bbox) {
+    print("clipping by bbox")
+    bbox_ext <- terra::ext(bbox[c(2, 4, 3, 1)])
+    ATL08_h5_clipBox(x, output, bbox_ext)
+  }
+)
+
 #' Clips ICESat-2 ATL08 data
 #'
 #' @param atl08 [`icesat2.atl08_h5-class`] object, obtained through [`ATL08_read()`]
@@ -39,34 +59,6 @@
 #' close(atl08_h5)
 #' @import hdf5r
 #' @export
-setGeneric(
-  "ATL08_h5_clipBox",
-  function(atl08, output, bbox) {
-    standardGeneric("ATL08_h5_clipBox")
-  }
-)
-
-#' @include class.icesat2.R
-#' @importClassesFrom terra SpatExtent
-setMethod(
-  "ATL08_h5_clipBox",
-  signature = c("icesat2.atl08_h5", "character", "SpatExtent"),
-  function(atl08, output, bbox) {
-    clipBoxATL08(atl08, output, bbox)
-  }
-)
-
-setMethod(
-  "ATL08_h5_clipBox",
-  signature = c("icesat2.atl08_h5", "character", "numeric"),
-  function(atl08, output, bbox) {
-    print("clipping by bbox")
-    bbox_ext <- terra::ext(bbox[c(2, 4, 3, 1)])
-    ATL08_h5_clipBox(atl08, bbox_ext)
-  }
-)
-
-
 ATL08_h5_clipBox <- function(atl08, output, bbox) {
   latitude <- longitude <- obj_type <- dataset.rank <- dataset.dims <- NA
   .I <- data.table::.I

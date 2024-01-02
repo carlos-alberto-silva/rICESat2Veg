@@ -191,7 +191,7 @@ default_agg_join <- function(x1, x2) {
 #' )
 #'
 #' # Unzipping ATL08 file
-#' atl08_path <- unzip(atl08_zip, exdir = outdir)
+#' unzip(atl08_zip, exdir = outdir)
 #'
 #' # Bounding rectangle coordinates
 #' ul_lat <- -13.72016
@@ -227,7 +227,7 @@ default_agg_join <- function(x1, x2) {
 #'   range = "max-min"
 #' )
 #'
-#' ATL08_canopy_h5_gridStat(
+#' ATL08_seg_attributes_h5_gridStat(
 #'   atl08_path = outdir,
 #'   metrics = c("h_canopy"),
 #'   out_root = file.path(outdir, "output"),
@@ -333,7 +333,6 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
   func <- lazyeval::f_interp(agg_function)
   call <- lazyeval::as_call(func)
-  x <- 1
   stats <- eval(call)
   classes <- lapply(stats, class)
   stats <- names(stats)
@@ -390,7 +389,6 @@ ATL08_seg_attributes_h5_gridStat <- function(
       vals <- ATL08_seg_attributes_dt_gridStat(vals)
 
       # vals = ATL08_seg_attributes_dt_clipGeometry(vals, polygon=polygon, split_by=NULL)
-
       vals <- vals@dt
       # Use only night photons
       # cols_night_flag = c(setdiff(cols, "night_flag"))

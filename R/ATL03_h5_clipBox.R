@@ -1,7 +1,7 @@
-#' Clips ICESat-2 ATL03 data
+#' Clips ICESat-2 ATL03 and ATL08 H5 data
 #'
-#' @param atl03 [`icesat2.atl03_h5-class`] object, obtained through [`ATL03_read()`]
-#' for clipping
+#' @param x [`icesat2.atl03_h5-class`] or [`icesat2.atl08_h5-class`] object,
+#' obtained through [`ATL03_read()`] or [`ATL08_read()`] for clipping
 #' @param output character. Path to the output h5 file.
 #' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
 #' order of the bbox is the default from NASA's ICESat-2 CMS searching:
@@ -9,20 +9,22 @@
 #'
 #' @return Returns the clipped S4 object of class [`icesat2.atl03_h5-class`]
 #'
-#' @description This function clips ATL03 HDF5 file within beam groups, but keeps metada and ancillary data the same.
+#' @description This function clips ATL03 and ATL08 HDF5 file within beam groups,
+#' but keeps metada and ancillary data the same.
 #'
 #' @examples
-##'# Specifying the path to ATL03 file (zip file)
-#'outdir = tempdir()
-#'atl03_zip <- system.file("extdata",
-#'                   "atl03_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+##' # Specifying the path to ATL03 file (zip file)
+#' outdir <- tempdir()
+#' atl03_zip <- system.file("extdata",
+#'   "atl03_20220401221822_01501506_005_01.zip",
+#'   package = "rICESat2Veg"
+#' )
 #'
-#'# Unzipping ATL03 file
-#'atl03_path <- unzip(atl03_zip,exdir = outdir)
+#' # Unzipping ATL03 file
+#' atl03_path <- unzip(atl03_zip, exdir = outdir)
 #'
-#'# Reading ATL03 data (h5 file)
-#atl03_h5<-atl03_read(atl03_path=atl03_path)
+#' # Reading ATL03 data (h5 file)
+#' atl03_h5 <- atl03_read(atl03_path = atl03_path)
 #'
 #'
 #' # Bounding rectangle coordinates
@@ -32,35 +34,61 @@
 #' ymax <- 42.75
 #'
 #' # Clipping ATL03 photons  by boundary box extent
-#'atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, outdir, xmin, xmax, ymin, ymax)
+#' atl03_photons_dt_clip <- clip(atl03_h5, outdir, xmin, xmax, ymin, ymax)
 #'
-#'close(atl03_h5)
+#' close(atl03_h5)
+#'
+#' #' outdir <- tempdir()
+#' atl08_zip <- system.file("extdata",
+#'   "ATL08_20220401221822_01501506_005_01.zip",
+#'   package = "rICESat2Veg"
+#' )
+#'
+#' # Unzipping ATL08 file
+#' atl08_path <- unzip(atl08_zip, exdir = outdir)
+#'
+#' # Reading ATL08 data (h5 file)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+#'
+#' # Bounding rectangle coordinates
+#' xmin <- -107.7
+#' xmax <- -106.5
+#' ymin <- 32.75
+#' ymax <- 42.75
+#'
+#' # Clipping ATL08 terrain and canopy attributes by boundary box
+#' atl08_seg_att_dt_clip <- clip(atl08_h5, outdir, xmin, xmax, ymin, ymax)
+#'
+#' close(atl08_h5)
 #' @import hdf5r
 #' @export
 setGeneric(
-  "ATL03_h5_clipBox",
-  function(atl03, output, bbox) {
-    standardGeneric("ATL03_h5_clipBox")
+  "clip",
+  function(x, output, bbox) {
+    standardGeneric("clip")
   }
 )
 
 #' @include class.icesat2.R
 #' @importClassesFrom terra SpatExtent
+#' @exportMethod clip
 setMethod(
-  "ATL03_h5_clipBox",
+  "clip",
   signature = c("icesat2.atl03_h5", "character", "SpatExtent"),
-  function(atl03, output, bbox) {
-    clipBoxATL03(atl03, output, bbox)
+  function(x, output, bbox) {
+    ATL03_h5_clipBox(x, output, bbox)
   }
 )
 
+#' @include class.icesat2.R
+#' @exportMethod clip
 setMethod(
-  "ATL03_h5_clipBox",
+  "clip",
   signature = c("icesat2.atl03_h5", "character", "numeric"),
-  function(atl03, output, bbox) {
+  function(x, output, bbox) {
     print("clipping by bbox")
     bbox_ext <- terra::ext(bbox[c(2, 4, 3, 1)])
-    ATL03_h5_clipBox(atl03, bbox_ext)
+    ATL03_h5_clipBox(x, output, bbox_ext)
   }
 )
 
@@ -94,7 +122,47 @@ ATL03_photons_per_segment <- function(beam, photonsMask) {
 }
 
 
-
+#' Clips ICESat-2 ATL03 H5 data
+#'
+#' @param x [`icesat2.atl03_h5-class`] object,
+#' obtained through [`ATL03_read()`] for clipping
+#' @param output character. Path to the output h5 file.
+#' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
+#' order of the bbox is the default from NASA's ICESat-2 CMS searching:
+#' [ul_lat, ul_lon, lr_lat, lr_lon].
+#'
+#' @return Returns the clipped S4 object of class [`icesat2.atl03_h5-class`]
+#'
+#' @description This function clips ATL03 HDF5 file within beam groups,
+#' but keeps metada and ancillary data the same.
+#'
+#' @examples
+##' # Specifying the path to ATL03 file (zip file)
+#' outdir <- tempdir()
+#' atl03_zip <- system.file("extdata",
+#'   "atl03_20220401221822_01501506_005_01.zip",
+#'   package = "rICESat2Veg"
+#' )
+#'
+#' # Unzipping ATL03 file
+#' atl03_path <- unzip(atl03_zip, exdir = outdir)
+#'
+#' # Reading ATL03 data (h5 file)
+#' atl03_h5 <- atl03_read(atl03_path = atl03_path)
+#'
+#'
+#' # Bounding rectangle coordinates
+#' xmin <- -107.7
+#' xmax <- -106.5
+#' ymin <- 32.75
+#' ymax <- 42.75
+#'
+#' # Clipping ATL03 photons  by boundary box extent
+#' atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, outdir, xmin, xmax, ymin, ymax)
+#'
+#' close(atl03_h5)
+#' @import hdf5r
+#' @export
 ATL03_h5_clipBox <- function(atl03, output, bbox) {
   dataset.rank <- dataset.dims <- obj_type <- name <- NA
 

@@ -59,7 +59,7 @@ PAGE_SIZE <- 2000
 #' }
 #' @import jsonlite curl magrittr
 #' @export
-ICESat2_datafinder <- function(short_name,
+ICESat2_finder <- function(short_name,
                            ul_lat,
                            ul_lon,
                            lr_lat,

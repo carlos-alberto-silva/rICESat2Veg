@@ -162,7 +162,7 @@ atl08_zip <- system.file("extdata",
 )
 
 # Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip, exdir = outdir)
+unzip(atl08_zip, exdir = outdir)
 
 # Bounding rectangle coordinates
 ul_lat <- -13.72016
@@ -198,7 +198,7 @@ finalizer <- list(
   range = "max-min"
 )
 
-ATL08_canopy_h5_gridStat(
+ATL08_seg_attributes_h5_gridStat(
   atl08_path = outdir,
   metrics = c("h_canopy"),
   out_root = file.path(outdir, "output"),

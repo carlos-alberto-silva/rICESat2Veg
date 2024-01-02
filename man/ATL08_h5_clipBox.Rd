@@ -25,18 +25,26 @@ will only clip the beam groups within hdf5, it won't change metadata
 or ancillary data.
 }
 \examples{
-# Specifying the path to ICESat-2 ATL08 data (zip file)
+# Specifying the path to ATL08 file (zip file)
 outdir <- tempdir()
-atl08_fp_zip <- system.file("extdata",
-  "ATL0802_A_2019103030338_O01964_T05337_02_001_01_sub.zip",
+atl08_zip <- system.file("extdata",
+  "ATL08_20220401221822_01501506_005_01.zip",
   package = "rICESat2Veg"
 )
 
-# Unzipping ICESat-2 ATL08 data
-atl08_path <- unzip(atl08_fp_zip, exdir = outdir)
+# Unzipping ATL08 file
+atl08_path <- unzip(atl08_zip, exdir = outdir)
 
-# Reading ICESat-2 ATL08 data (h5 file)
-atl08 <- ATL08_read(atl08_path = atl08_path)
+# Reading ATL08 data (h5 file)
 
-close(atl08)
+# Bounding rectangle coordinates
+xmin <- -107.7
+xmax <- -106.5
+ymin <- 32.75
+ymax <- 42.75
+
+# Clipping ATL08 terrain and canopy attributes by boundary box
+atl08_seg_att_dt_clip <- ATL08_h5_clipBox(atl08_h5,outdir, xmin, xmax, ymin, ymax)
+
+close(atl08_h5)
 }

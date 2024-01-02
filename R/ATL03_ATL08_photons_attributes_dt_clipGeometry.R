@@ -2,8 +2,6 @@
 #'
 #' @description This function clips joined ATL03 and ATL08 photon attributes within a given geometry
 #'
-#' @usage ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
-#'
 #' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 data
 #' (output of [rICESat2Veg::ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param polygon Polygon. An object of class [`terra::SpatVector`],

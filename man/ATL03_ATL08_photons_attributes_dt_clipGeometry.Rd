@@ -5,7 +5,11 @@
 \alias{ATL03_ATL08_photons_attributes_dt_clipGeometry}
 \title{Clip Joined ATL03 and ATL08 by Geometry}
 \usage{
-ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
+ATL03_ATL08_photons_attributes_dt_clipGeometry(
+  atl03_atl08_dt,
+  polygon,
+  split_by = "id"
+)
 }
 \arguments{
 \item{atl03_atl08_dt}{An S4 object of class \link{icesat2.atl03atl08_dt} containing ATL03 and ATL08 data

@@ -1,4 +1,4 @@
-.datatable.aware = TRUE
+.datatable.aware <- TRUE
 #' @importFrom hdf5r H5File
 setRefClass("H5File")
 
@@ -12,7 +12,6 @@ setClass(
 #'
 #' @slot h5 Object of class [`H5File`][hdf5r::H5File-class] from `hdf5r` package containing the
 #' ICESat-2 Global Geolocated Photon Data (ATL03)
-
 #'
 #' @seealso [`H5File`][hdf5r::H5File-class] in the `hdf5r` package and
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
@@ -42,7 +41,6 @@ icesat2.atl08_h5 <- setClass(
 
 
 #' Dispatches the `[[` function to h5
-#'
 #'
 #' @param x An object of class `icesat2.atl03_h5`
 #' @param path The path for the dataset which to open

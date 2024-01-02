@@ -14,7 +14,7 @@
 #' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl03_dt]
 #' containing the ATL03 photons attributes.
 #'
-#'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_atl03_ATBD_r006.pdf}
+#' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_atl03_ATBD_r006.pdf}
 #'
 #' @examples
 #'# Specifying the path to ATL03 file (zip file)
