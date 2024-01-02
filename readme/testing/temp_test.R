@@ -163,7 +163,11 @@ for (beamName in beams) {
   n_seg_ph <- beam[["land_segments/n_seg_ph"]][landSegmentsMask]
 
   # Create mask for photons
-  photonsMask <- unlist(Vectorize(seq.default, vectorize.args = c("from", "to"))(from = ph_ndx_beg, to = ph_ndx_beg + n_seg_ph))
+  photonsMask <- unlist(
+    Vectorize(seq.default, vectorize.args = c("from", "to"))(
+      from = ph_ndx_beg,
+      to = ph_ndx_beg + n_seg_ph)
+  )
 
   # Get sizes of clipping datasets
   photonsSize <- beam[["signal_photons/ph_h"]]$dims
@@ -197,7 +201,7 @@ for (beamName in beams) {
   clipByMask(beam, updateBeam, segmentsCut, segmentsMask, pb)
   clipByMask2D(beam, updateBeam, segmentsCut2D, segmentsMask, pb)
   clipByMask(beam, updateBeam, photonsCut, photonsMask, pb)
-  updateBeam[["land_segments/ph_ndx_beg"]][] = c(1, cumsum(updateBeam[["land_segments/n_seg_ph"]][])[-1])
+  updateBeam[["land_segments/ph_ndx_beg"]][] <- c(1, cumsum(updateBeam[["land_segments/n_seg_ph"]][])[-1])
 
   close(pb)
 }

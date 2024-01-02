@@ -1,63 +1,67 @@
-#'Download ICESat-2  data
+#' Download ICESat-2  data
 #'
-#'@description Download ICESat-2 ATL03 and ALT08 data from LP DAAC Data Pool. Users will need to enter their
-#'Earth Explore login Information for downloading the data.
+#' @description Download ICESat-2 ATL03 and ALT08 data from LP DAAC Data Pool. Users will need to enter their
+#' Earth Explore login Information for downloading the data.
 #'
-#'@usage ICESat2data_download(filepath, outdir, overwrite, buffer_size, timeout)
+#' @usage ICESat2data_download(filepath, outdir, overwrite, buffer_size, timeout)
 #'
-#'@param filepath Vector object; path to ATL03 or ALT08 data, or both (output of [rICESat2Veg::ICESat2_finder()])
-#'@param outdir Vector object, output directory for downloading GEDI data, default [tempdir()]
-#'@param overwrite logical; overwrite file if they already exists in destination, default FALSE
-#'@param buffer_size integer; the size of download chunk in KB to hold in memory before writing to file, default 512.
-#'@param timeout integer; connection timeout in seconds.
+#' @param filepath Vector object; path to ATL03 or ALT08 data, or both (output of [rICESat2Veg::ICESat2_finder()])
+#' @param outdir Vector object, output directory for downloading GEDI data, default [tempdir()]
+#' @param overwrite logical; overwrite file if they already exists in destination, default FALSE
+#' @param buffer_size integer; the size of download chunk in KB to hold in memory before writing to file, default 512.
+#' @param timeout integer; connection timeout in seconds.
 #'
-#'@return No return value on success, on failure it will [stop()]
-#'@references Credits to Cole Krehbiel. Code adapted from \url{https://git.earthdata.nasa.gov/projects/LPDUR/repos/daac_data_download_r/browse/DAACDataDownload.R}
-#'@examples
-#'\dontrun{
-#'# Set path to ICESat-2 data
-#'# herein we will only download xml metedata
-#'filepath=c("https://n5eil01u.ecs.nsidc.org/DP7/ATLAS/ATL08.005/2019.07.23/ATL08_20190723195221_03930406_005_01.h5",
-#'            "https://n5eil01u.ecs.nsidc.org/DP7/ATLAS/ATL08.005/2020.09.30/ATL08_20200930105550_00960901_005_01.h5")
+#' @return No return value on success, on failure it will [stop()]
+#' @references Credits to Cole Krehbiel. Code adapted from
+#' \url{https://git.earthdata.nasa.gov/projects/LPDUR/repos/daac_data_download_r/browse/DAACDataDownload.R}
+#' @examples
+#' \dontrun{
+#' # Set path to ICESat-2 data
+#' # herein we will only download xml metedata
+#' filepath <- c(
+#'   "https://n5eil01u.ecs.nsidc.org/DP7/ATLAS/ATL08.005/2019.07.23/ATL08_20190723195221_03930406_005_01.h5",
+#'   "https://n5eil01u.ecs.nsidc.org/DP7/ATLAS/ATL08.005/2020.09.30/ATL08_20200930105550_00960901_005_01.h5"
+#' )
 #'
-#'# Set dir to download files to
-#'outdir=tempdir()
+#' # Set dir to download files to
+#' outdir <- tempdir()
 #'
-#'# Create .netrc file
-#'netrc = file.path(outdir, ".netrc")
-#'netrc_conn <- file(netrc)
+#' # Create .netrc file
+#' netrc <- file.path(outdir, ".netrc")
+#' netrc_conn <- file(netrc)
 #'
-#'writeLines(c("machine urs.earthdata.nasa.gov",
-#'             sprintf("login %s", Sys.getenv("NASA_USER")),
-#'             sprintf("password %s", Sys.getenv("NASA_PASSWORD"))
-#'), netrc_conn)
+#' writeLines(c(
+#'   "machine urs.earthdata.nasa.gov",
+#'   sprintf("login %s", Sys.getenv("NASA_USER")),
+#'   sprintf("password %s", Sys.getenv("NASA_PASSWORD"))
+#' ), netrc_conn)
 #'
-#'close(netrc_conn)
+#' close(netrc_conn)
 #'
-#'#' Downloading ICEsat-2 data
-#'ICESat2data_download(filepath,outdir)
-#'}
-#'@import curl
-#'@export
-ICESat2data_download<-function(filepath, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout=10){
+#' #' Downloading ICEsat-2 data
+#' ICESat2data_download(filepath, outdir)
+#' }
+#' @import curl
+#' @export
+ICESat2data_download <- function(filepath, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
   if (is.null(outdir)) {
-    outdir = tempdir()
+    outdir <- tempdir()
   }
   stopifnotMessage(
     "outdir is not a valid path" = checkParentDir(outdir),
     "overwrite is not logical" = checkLogical(overwrite),
     "buffer_size is not an integer" = checkInteger(buffer_size)
   )
-  buffer_size = as.integer(buffer_size)
-  netrc = getNetRC(outdir)
+  buffer_size <- as.integer(buffer_size)
+  netrc <- getNetRC(outdir)
 
-  files<-filepath
-  n_files = length(files)
+  files <- filepath
+  n_files <- length(files)
 
   # Download all files in filepath vector
-  #i=1
+  # i=1
   for (i in 1:n_files) {
-    url = files[i]
+    url <- files[i]
 
     if (is.na(url)) next
     message("------------------------------")
@@ -79,57 +83,63 @@ ICESat2data_download<-function(filepath, outdir = NULL, overwrite = FALSE, buffe
   }
 }
 
-icesat2DownloadFile = function(url, outdir, overwrite, buffer_size, netrc, timeout) {
+icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, timeout) {
   filename <- file.path(outdir, basename(url)) # Keep original filename
-  if((! overwrite) && file.exists(filename)) {
+  if ((!overwrite) && file.exists(filename)) {
     message("Skipping this file, already downloaded!")
     return(0)
   } # SKip if already downloaded
 
   # Temporary to file to resume to
-  resume=paste0(filename, ".curltmp")
-  if(file.exists(resume)){
-    resume_from=file.info(resume)$size # Get current size to resume from
+  resume <- paste0(filename, ".curltmp")
+  if (file.exists(resume)) {
+    resume_from <- file.info(resume)$size # Get current size to resume from
   } else {
-    resume_from=0
+    resume_from <- 0
   }
 
   # Connection config
-  h = curl::new_handle()
-  curl::handle_setopt(h, netrc=1, netrc_file=netrc, resume_from=resume_from, connecttimeout=timeout)
+  h <- curl::new_handle()
+  curl::handle_setopt(h, netrc = 1, netrc_file = netrc, resume_from = resume_from, connecttimeout = timeout)
 
   tryCatch({
-    fileHandle=file(resume, open="ab", raw = T)
+    fileHandle <- file(resume, open = "ab", raw = T)
     message("Connecting...")
-    conn = tryCatch(curl::curl(url, handle=h, open="rb"), error = function(e) {
+    conn <- tryCatch(curl::curl(url, handle = h, open = "rb"), error = function(e) {
       file.remove(netrc)
       stop(e)
     })
     message("Connected successfully, downloading...")
-    headers=rawToChar(curl::handle_data(h)$headers)
-    total_size=as.numeric(gsub("[^\u00e7]*Content-Length: ([0-9]+)[^\u00e7]*","\\1",x=headers, perl = T))
-    while(TRUE) {
-      message(sprintf("\rDownloading... %.2f/%.2fMB (%.2f%%)    ",
-                      resume_from/1024.0/1024.0,
-                      total_size/1024.0/1024.0,
-                      100.0*resume_from/total_size),
-              appendLF=FALSE)
-      data = readBin(conn, what = raw(), n = 1024*buffer_size)
-      size = length(data)
-      if (size==0) {
+    headers <- rawToChar(curl::handle_data(h)$headers)
+    total_size <- as.numeric(gsub("[^\u00e7]*Content-Length: ([0-9]+)[^\u00e7]*", "\\1", x = headers, perl = T))
+    while (TRUE) {
+      message(
+        sprintf(
+          "\rDownloading... %.2f/%.2fMB (%.2f%%)    ",
+          resume_from / 1024.0 / 1024.0,
+          total_size / 1024.0 / 1024.0,
+          100.0 * resume_from / total_size
+        ),
+        appendLF = FALSE
+      )
+      data <- readBin(conn, what = raw(), n = 1024 * buffer_size)
+      size <- length(data)
+      if (size == 0) {
         break
       }
       writeBin(data, fileHandle, useBytes = T)
-      resume_from = resume_from + size
+      resume_from <- resume_from + size
     }
-    message(sprintf("\rDownloading... %.2f/%.2fMB (100%%)    ",
-                    total_size/1024.0/1024.0,
-                    total_size/1024.0/1024.0))
+    message(sprintf(
+      "\rDownloading... %.2f/%.2fMB (100%%)    ",
+      total_size / 1024.0 / 1024.0,
+      total_size / 1024.0 / 1024.0
+    ))
     close(fileHandle)
     close(conn)
     file.rename(resume, filename)
     return(0)
-  }, interrupt=function(e){
+  }, interrupt = function(e) {
     warning("\nDownload interrupted!!!")
     try(close(conn), silent = TRUE)
     try(close(fileHandle), silent = TRUE)
@@ -140,18 +150,22 @@ icesat2DownloadFile = function(url, outdir, overwrite, buffer_size, netrc, timeo
   return(-1)
 }
 
-getNetRC = function(dl_dir) {
-  netrc <- file.path(dl_dir,'.netrc')  # Path to netrc file
+getNetRC <- function(dl_dir) {
+  netrc <- file.path(dl_dir, ".netrc") # Path to netrc file
   # ------------------------------------CREATE .NETRC FILE------------------------------------------ #
   if (file.exists(netrc) == FALSE || any(grepl("urs.earthdata.nasa.gov", readLines(netrc))) == FALSE) {
     netrc_conn <- file(netrc)
 
     # User will be prompted for NASA Earthdata Login Username and Password below
-    writeLines(c("machine urs.earthdata.nasa.gov",
-                 sprintf("login %s", getPass::getPass(msg = "Enter NASA Earthdata Login Username \n (or create an account at urs.earthdata.nasa.gov) :")),
-                 sprintf("password %s", getPass::getPass(msg = "Enter NASA Earthdata Login Password:"))), netrc_conn)
+    writeLines(c(
+      "machine urs.earthdata.nasa.gov",
+      sprintf("login %s", getPass::getPass(
+        msg = "Enter NASA Earthdata Login Username \n (or create an account at urs.earthdata.nasa.gov) :"
+      )),
+      sprintf("password %s", getPass::getPass(msg = "Enter NASA Earthdata Login Password:"))
+    ), netrc_conn)
     close(netrc_conn)
     message("A .netrc file with your Earthdata Login credentials was stored in the output directory ")
   }
-  return (netrc)
+  return(netrc)
 }
