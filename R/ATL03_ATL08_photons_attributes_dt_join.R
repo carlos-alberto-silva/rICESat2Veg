@@ -71,7 +71,7 @@
 #' close(atl08_h5)
 #' @export
 ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
-                                beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
+                                                   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
   # Check file input
   if (!class(atl03_h5) == "icesat2.atl03_h5") {
     stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [ATL03_read()] function ")
@@ -104,8 +104,8 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
 
   i_s <- 0
 
-  atl03_h5<-atl03_h5@h5
-  atl08_h5<-atl08_h5@h5
+  atl03_h5 <- atl03_h5@h5
+  atl08_h5 <- atl08_h5@h5
 
   for (i in beam) {
     i_s <- i_s + 0.25

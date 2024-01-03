@@ -62,10 +62,10 @@ ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) 
     stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
   }
 
-  if (any(is.na(atl08_seg_att_dt@dt))) {
-    atl08_seg_att_dt2 <- na.omit(atl08_seg_att_dt@dt)
+  if (any(is.na(atl08_seg_att_dt))) {
+    atl08_seg_att_dt2 <- na.omit(atl08_seg_att_dt)
   } else {
-    atl08_seg_att_dt2 <- atl08_seg_att_dt@dt
+    atl08_seg_att_dt2 <- atl08_seg_att_dt
   }
 
   if (!nrow(atl08_seg_att_dt2) > 1) {
@@ -79,6 +79,7 @@ ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) 
   `:=` <- data.table::`:=`
 
   call <- lazy_call(func)
+  setattr(atl08_seg_att_dt2, "class", c("data.table", "data.frame"))
 
   vect <- terra::vect(
     atl08_seg_att_dt2,

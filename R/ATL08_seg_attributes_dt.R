@@ -40,6 +40,7 @@ ATL08.var.map[["n_te_photons"]] <- "/land_segments/terrain/n_te_photons"
 ATL08.var.map[["photon_rate_te"]] <- "/land_segments/terrain/photon_rate_te"
 ATL08.var.map[["subset_te_flag"]] <- "/land_segments/terrain/subset_te_flag"
 ATL08.var.map[["terrain_slope"]] <- "/land_segments/terrain/terrain_slope"
+ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 
 #' ATL08 Terrain and Canopy Attributes
 #'

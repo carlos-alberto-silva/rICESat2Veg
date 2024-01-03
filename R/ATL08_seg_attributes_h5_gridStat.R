@@ -195,9 +195,9 @@ default_agg_join <- function(x1, x2) {
 #'
 #' # Bounding rectangle coordinates
 #' ul_lat <- -13.72016
-#' ul_lon <- -44.14000
-#' lr_lat <- -13.74998
-#' lr_lon <- -44.11009
+#' ul_lon <- -100
+#' lr_lat <- 54
+#' lr_lon <- -975
 #'
 #' res <- 100 # meters
 #' lat_to_met_factor <- 1 / 110540
@@ -228,7 +228,7 @@ default_agg_join <- function(x1, x2) {
 #' )
 #'
 #' ATL08_seg_attributes_h5_gridStat(
-#'   atl08_path = outdir,
+#'   atl08_path = "C:/Users/caiohamamura/Downloads/",
 #'   metrics = c("h_canopy"),
 #'   out_root = file.path(outdir, "output"),
 #'   ul_lat = ul_lat,
@@ -330,7 +330,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
   metricCounter <- 0
   nMetrics <- length(metrics)
 
-
+  x <- 1
   func <- lazyeval::f_interp(agg_function)
   call <- lazyeval::as_call(func)
   stats <- eval(call)
@@ -353,7 +353,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
         datatype <- gdalBindings::GDALDataType$GDT_Int32
         nodata <- 0
       }
-      rasts[[stats[[stat_ind]]]] <- createDataset(
+      rasts[[stats[[stat_ind]]]] <- gdalBindings::createDataset(
         raster_path = rast_paths[[stat_ind]],
         nbands = 1,
         datatype = datatype,
@@ -382,14 +382,9 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
       # read H5
       atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+      vals <- ATL08_seg_attributes_dt(atl08_h5, attribute = cols[-c(1:2)])
 
-      vals <- ATL08_seg_attributes_dt(atl08_h5, beam = beam, attribute = cols[-c(1:2)])
-
-      ## Clip metrics by extent
-      vals <- ATL08_seg_attributes_dt_gridStat(vals)
-
-      # vals = ATL08_seg_attributes_dt_clipGeometry(vals, polygon=polygon, split_by=NULL)
-      vals <- vals@dt
+      vals <- ATL08_seg_attributes_dt_clipBox(vals, xmin = ul_lon, xmax = lr_lon, ymin = lr_lat, ymax = ul_lat)
       # Use only night photons
       # cols_night_flag = c(setdiff(cols, "night_flag"))
       # vals = vals[night_flag == 1, cols_night_flag, with = FALSE]

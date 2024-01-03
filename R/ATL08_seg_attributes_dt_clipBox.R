@@ -48,10 +48,10 @@ ATL08_seg_attributes_dt_clipBox <- function(atl08_seg_att_dt, xmin, xmax, ymin, 
     stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
   }
 
-  if (any(is.na(atl08_seg_att_dt@dt))) {
-    atl08_seg_att_dt <- na.omit(atl08_seg_att_dt@dt)
+  if (any(is.na(atl08_seg_att_dt))) {
+    atl08_seg_att_dt <- na.omit(atl08_seg_att_dt)
   } else {
-    atl08_seg_att_dt <- atl08_seg_att_dt@dt
+    atl08_seg_att_dt <- atl08_seg_att_dt
   }
 
   # xmin ymin xmax ymax

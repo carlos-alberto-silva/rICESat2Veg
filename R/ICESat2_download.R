@@ -43,7 +43,7 @@
 #' }
 #' @import curl
 #' @export
-ICESat2data_download <- function(filepath, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
+ICESat2_download <- function(filepath, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
   if (is.null(outdir)) {
     outdir <- tempdir()
   }

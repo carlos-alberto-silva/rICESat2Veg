@@ -199,7 +199,7 @@ finalizer <- list(
 )
 
 ATL08_seg_attributes_h5_gridStat(
-  atl08_path = outdir,
+  atl08_path = "C:/Users/caiohamamura/Downloads/",
   metrics = c("h_canopy"),
   out_root = file.path(outdir, "output"),
   ul_lat = ul_lat,
